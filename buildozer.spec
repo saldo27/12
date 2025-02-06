@@ -19,11 +19,10 @@ android.ndk = 25b
 android.accept_sdk_license = True
 android.arch = arm64-v8a
 
-# Orientation settings for Android 14
-orientation = portrait
-android.orientation = portrait
-android.screenOrientation = portrait
-android.manifest.orientation = portrait
+# Allow orientation changes
+orientation = all
+android.orientation = all
+android.manifest.orientation = unspecified
 
 # Add these lines for Android 14 compatibility
 android.manifest.activity_config = orientation|screenSize
