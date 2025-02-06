@@ -1,52 +1,42 @@
 [app]
-# Title of your application
 title = TurnosApp
-
-# Package name
 package.name = turnosapp
-
-# Name of your main Python file
+package.domain = org.test
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
-
-# Main Python module (the one containing your main.py)
+source.include_exts = py,png,jpg,kv,atlas,txt
 source.include_patterns = assets/*,images/*
-
-# Version of your app
+source.exclude_dirs = tests, bin, .git
 version = 1.0
 
-# Requirements
-requirements = python3,kivy,datetime,randomvy
+requirements = python3,kivy,pillow
 
-# Android specific
+# Android specific settings
 android.permissions = INTERNET
-android.api = 31
+android.api = 33
 android.minapi = 21
-android.sdk = 31
-android.ndk = 23b
+android.sdk = 33
+android.ndk = 25b
 android.accept_sdk_license = True
-
-# Architecture
 android.arch = arm64-v8a
 
-[buildozer]
-# Log level (0 = error only, 1 = info, 2 = debug)
-log_level = 2
-
-# Path to build directory (default: ./.buildozer)
-build_dir = ./.buildozer
-
-# Path to build artifact storage (default: ./bin)
-bin_dir = ./bin
-
-# Whether to clear build directory before each build
-warning.disable = 0
-
-# Add these lines in the [app] section
+# Orientation settings
 orientation = portrait
 android.orientation = portrait
-android.presplash.color = #FFFFFF
-fullscreen = 0
 
-# Add these permissions as your app works with time
-android.permissions = INTERNET,ACCESS_NETWORK_TIME
+# Bootstrap and dependencies
+android.bootstrap = sdl2
+android.enable_androidx = True
+
+# Build settings
+android.logcat_filters = *:S python:D
+p4a.branch = master
+
+# Gradle settings
+android.gradle_dependencies = androidx.core:core:1.7.0, androidx.appcompat:appcompat:1.4.1
+
+log_level = 2
+
+[buildozer]
+warn_on_root = 1
+build_dir = ./.buildozer
+bin_dir = ./bin
