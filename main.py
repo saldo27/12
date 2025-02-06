@@ -9,6 +9,10 @@ from kivy.uix.popup import Popup
 from kivy.properties import StringProperty  # Agregamos esta importación
 from kivy.clock import Clock  # Agregamos esta importación
 from datetime import datetime, timedelta
+from kivy.utils import platform
+if platform == 'android':
+    from android.permissions import request_permissions, Permission
+    request_permissions([Permission.INTERNET])
 import random
 
 # Definición del diseño en KV Language
