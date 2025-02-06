@@ -14,7 +14,9 @@ if platform == 'android':
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.INTERNET])
 import random
-
+if platform == 'android':
+    Window.softinput_mode = 'below_target'
+    
 # Definición del diseño en KV Language
 KV = '''
 #:import utils kivy.utils
