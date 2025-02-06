@@ -1,3 +1,4 @@
+[app]
 # (str) Title of your application
 title = TurnosApp
 
@@ -20,7 +21,7 @@ version = 0.1
 requirements = python3,kivy==2.2.1
 
 # (str) Supported orientation (one of landscape, portrait or all)
-orientation = all
+orientation = portrait,landscape  # Fixed: Changed from 'all' to 'portrait,landscape'
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
@@ -40,27 +41,13 @@ android.sdk = 33
 # (str) Android NDK version to use
 android.ndk = 25b
 
-# (str) Android NDK directory (if empty, it will be automatically downloaded.)
-#android.ndk_path =
-
-# (str) Android SDK directory (if empty, it will be automatically downloaded.)
-#android.sdk_path =
-
 # (bool) Use --private data storage (True) or --dir public storage (False)
 android.private_storage = True
 
 # (str) Android entry point, default is ok for Kivy-based app
 android.entrypoint = org.kivy.android.PythonActivity
 
-# (list) List of Java .jar files to add to the libs so that pyjnius can access
-# their classes. Don't add jars that you do not need, since extra jars can slow
-# down the build process. Allows wildcards matching, for example:
-# OUYA-ODK/libs/*.jar
-#android.add_jars = foo.jar,bar.jar,path/to/more/*.jar
-
-# (bool) enable AndroidX support. Enable when 'android.gradle_dependencies'
-# contains an 'androidx' package, or any package from Kotlin source.
-# android.enable_androidx requires android.api >= 28
+# (bool) enable AndroidX support
 android.enable_androidx = True
 
 [buildozer]
@@ -69,8 +56,3 @@ log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1
-
-[buildozer]
-warn_on_root = 1
-build_dir = ./.buildozer
-bin_dir = ./bin
