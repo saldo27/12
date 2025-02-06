@@ -1,4 +1,3 @@
-%%writefile buildozer.spec
 [app]
 title = TurnosApp
 package.name = turnosapp
