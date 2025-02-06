@@ -6,17 +6,25 @@ from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
-from kivy.properties import StringProperty  # Agregamos esta importación
-from kivy.clock import Clock  # Agregamos esta importación
+from kivy.properties import StringProperty
+from kivy.clock import Clock
 from datetime import datetime, timedelta
 from kivy.utils import platform
+
+# Force portrait mode - ADD THESE LINES BEFORE ANYTHING ELSE
+from kivy.config import Config
+Config.set('graphics', 'orientation', 'portrait')
+Config.set('graphics', 'width', '600')  # Set appropriate width for portrait
+Config.set('graphics', 'height', '1000')  # Set appropriate height for portrait
+Config.write()
+
+# Then set Window orientation
+Window.orientation = 'portrait'
+
 if platform == 'android':
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.INTERNET])
-import random
-if platform == 'android':
-    Window.softinput_mode = 'below_target'
-    Window.orientation = 'portrait'  # Add this line
+    Window.softinput_mode = 'below_target
     
 # Definición del diseño en KV Language
 KV = '''
@@ -33,8 +41,8 @@ KV = '''
 
 <TurnosScreen>:
     orientation: 'vertical'
-    padding: 10
-    spacing: 10
+    padding: '10dp'
+    spacing: '10dp'
     canvas.before:
         Color:
             rgba: utils.get_color_from_hex('#f0f0f0')
@@ -45,15 +53,16 @@ KV = '''
     Label:
         text: 'Sorteo de Turnos UCI-S.Lucía'
         size_hint_y: None
-        height: '50dp'
+        height: '60dp'
         color: utils.get_color_from_hex('#333333')
         bold: True
         font_size: '20sp'
     
     BoxLayout:
         size_hint_y: None
-        height: '50dp'
-        spacing: 5
+        height: '60dp'
+        spacing: '5dp'
+        padding: '5dp'
         
         TextInput:
             id: worker_input
@@ -61,7 +70,7 @@ KV = '''
             multiline: False
             size_hint_x: 0.7
             font_size: '16sp'
-            padding: [10, 10]  # Cambiado para mayor compatibilidad
+            padding: '10dp'
             
         Button:
             text: 'Añadir'
@@ -73,32 +82,33 @@ KV = '''
     Label:
         text: 'Médicos añadidos:'
         size_hint_y: None
-        height: '30dp'
+        height: '40dp'
         color: utils.get_color_from_hex('#333333')
         halign: 'left'
         text_size: self.size
         
     ScrollView:
-        size_hint_y: 0.3
+        size_hint_y: 0.25
         
         Label:
             id: workers_list
             size_hint_y: None
             height: self.texture_size[1]
             text_size: self.width, None
-            padding: [10, 10]  # Cambiado para mayor compatibilidad
+            padding: '10dp'
             color: utils.get_color_from_hex('#333333')
     
     BoxLayout:
         orientation: 'vertical'
         size_hint_y: None
-        height: '140dp'
-        spacing: 5
+        height: '160dp'
+        spacing: '5dp'
+        padding: '5dp'
         
         Label:
             text: 'Hora de inicio (HH:MM):'
             size_hint_y: None
-            height: '30dp'
+            height: '40dp'
             color: utils.get_color_from_hex('#333333')
             halign: 'left'
             text_size: self.size
@@ -108,12 +118,12 @@ KV = '''
             multiline: False
             size_hint_y: None
             height: '40dp'
-            padding: [10, 10]  # Cambiado para mayor compatibilidad
+            padding: '10dp'
             
         Label:
             text: 'Hora de fin (HH:MM):'
             size_hint_y: None
-            height: '30dp'
+            height: '40dp'
             color: utils.get_color_from_hex('#333333')
             halign: 'left'
             text_size: self.size
@@ -123,12 +133,12 @@ KV = '''
             multiline: False
             size_hint_y: None
             height: '40dp'
-            padding: [10, 10]  # Cambiado para mayor compatibilidad
+            padding: '10dp'
     
     Button:
         text: 'Generar Turnos'
         size_hint_y: None
-        height: '50dp'
+        height: '60dp'
         background_normal: ''
         background_color: utils.get_color_from_hex('#4CAF50')
         on_release: root.generate_shifts()
