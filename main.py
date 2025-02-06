@@ -1,11 +1,3 @@
-# Import statements at the very top
-from kivy.config import Config
-# Force portrait BEFORE creating the window
-Config.set('graphics', 'orientation', 'portrait')
-Config.set('graphics', 'width', '540')  # Standard phone width
-Config.set('graphics', 'height', '960')  # Standard phone height
-Config.write()
-
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -14,27 +6,39 @@ from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
 from kivy.clock import Clock
 from datetime import datetime, timedelta
 from kivy.utils import platform
-
-# Force rotation to portrait mode
-Window.size = (540, 960)
-Window.rotation = 0
-Window.orientation = 'portrait'
 
 if platform == 'android':
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.INTERNET])
     Window.softinput_mode = 'below_target'
-    
-    # Additional Android-specific orientation settings
-    from jnius import autoclass
-    activity = autoclass('org.kivy.android.PythonActivity').mActivity
-    activity.setRequestedOrientation(1)  # 1 = SCREEN_ORIENTATION_PORTRAIT
-    
-# Definición del diseño en KV Language
+
+# Add this new class for adaptive layout
+class AdaptiveBox(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_resize=self.on_window_resize)
+        self.orientation = 'vertical'  # default to vertical
+        Clock.schedule_once(self.check_orientation, 0)
+
+    def on_window_resize(self, instance, width, height):
+        self.check_orientation(None)
+
+    def check_orientation(self, dt):
+        # If width is greater than height, use horizontal layout
+        if Window.width > Window.height:
+            self.orientation = 'horizontal'
+            self.padding = [20, 10]
+            self.spacing = 20
+        else:
+            self.orientation = 'vertical'
+            self.padding = [10, 20]
+            self.spacing = 10
+
+# Update KV string with adaptive layout
 KV = '''
 #:import utils kivy.utils
 
@@ -48,118 +52,124 @@ KV = '''
         padding: 10, 10
 
 <TurnosScreen>:
-    orientation: 'vertical'
-    padding: '10dp'
-    spacing: '10dp'
-    canvas.before:
-        Color:
-            rgba: utils.get_color_from_hex('#f0f0f0')
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    
-    Label:
-        text: 'Sorteo de Turnos UCI-S.Lucía'
-        size_hint_y: None
-        height: '60dp'
-        color: utils.get_color_from_hex('#333333')
-        bold: True
-        font_size: '20sp'
-    
-    BoxLayout:
-        size_hint_y: None
-        height: '60dp'
-        spacing: '5dp'
-        padding: '5dp'
+    AdaptiveBox:
+        canvas.before:
+            Color:
+                rgba: utils.get_color_from_hex('#f0f0f0')
+            Rectangle:
+                pos: self.pos
+                size: self.size
         
-        TextInput:
-            id: worker_input
-            hint_text: 'Nombre del médico'
-            multiline: False
-            size_hint_x: 0.7
-            font_size: '16sp'
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.4 if root.width > root.height else 1
+            size_hint_y: 1 if root.width > root.height else 0.5
+            spacing: '10dp'
             padding: '10dp'
             
-        Button:
-            text: 'Añadir'
-            size_hint_x: 0.3
-            background_normal: ''
-            background_color: utils.get_color_from_hex('#2196F3')
-            on_release: root.add_worker()
-    
-    Label:
-        text: 'Médicos añadidos:'
-        size_hint_y: None
-        height: '40dp'
-        color: utils.get_color_from_hex('#333333')
-        halign: 'left'
-        text_size: self.size
-        
-    ScrollView:
-        size_hint_y: 0.25
-        
-        Label:
-            id: workers_list
-            size_hint_y: None
-            height: self.texture_size[1]
-            text_size: self.width, None
-            padding: '10dp'
-            color: utils.get_color_from_hex('#333333')
-    
-    BoxLayout:
-        orientation: 'vertical'
-        size_hint_y: None
-        height: '160dp'
-        spacing: '5dp'
-        padding: '5dp'
-        
-        Label:
-            text: 'Hora de inicio (HH:MM):'
-            size_hint_y: None
-            height: '40dp'
-            color: utils.get_color_from_hex('#333333')
-            halign: 'left'
-            text_size: self.size
+            Label:
+                text: 'Sorteo de Turnos UCI-S.Lucía'
+                size_hint_y: None
+                height: '50dp'
+                color: utils.get_color_from_hex('#333333')
+                bold: True
+                font_size: '20sp'
             
-        TextInput:
-            id: start_time
-            multiline: False
-            size_hint_y: None
-            height: '40dp'
-            padding: '10dp'
+            BoxLayout:
+                size_hint_y: None
+                height: '50dp'
+                spacing: '5dp'
+                
+                TextInput:
+                    id: worker_input
+                    hint_text: 'Nombre del médico'
+                    multiline: False
+                    size_hint_x: 0.7
+                    font_size: '16sp'
+                    padding: [10, 10]
+                    
+                Button:
+                    text: 'Añadir'
+                    size_hint_x: 0.3
+                    background_normal: ''
+                    background_color: utils.get_color_from_hex('#2196F3')
+                    on_release: root.add_worker()
             
-        Label:
-            text: 'Hora de fin (HH:MM):'
-            size_hint_y: None
-            height: '40dp'
-            color: utils.get_color_from_hex('#333333')
-            halign: 'left'
-            text_size: self.size
+            Label:
+                text: 'Médicos añadidos:'
+                size_hint_y: None
+                height: '30dp'
+                color: utils.get_color_from_hex('#333333')
+                halign: 'left'
+                text_size: self.size
+                
+            ScrollView:
+                size_hint_y: 0.3
+                Label:
+                    id: workers_list
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: [10, 10]
+                    color: utils.get_color_from_hex('#333333')
             
-        TextInput:
-            id: end_time
-            multiline: False
-            size_hint_y: None
-            height: '40dp'
-            padding: '10dp'
-    
-    Button:
-        text: 'Generar Turnos'
-        size_hint_y: None
-        height: '60dp'
-        background_normal: ''
-        background_color: utils.get_color_from_hex('#4CAF50')
-        on_release: root.generate_shifts()
-    
-    ScrollView:
-        ScrollableLabel:
-            id: results
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: '140dp'
+                spacing: '5dp'
+                
+                Label:
+                    text: 'Hora de inicio (HH:MM):'
+                    size_hint_y: None
+                    height: '30dp'
+                    color: utils.get_color_from_hex('#333333')
+                    halign: 'left'
+                    text_size: self.size
+                    
+                TextInput:
+                    id: start_time
+                    multiline: False
+                    size_hint_y: None
+                    height: '40dp'
+                    padding: [10, 10]
+                    
+                Label:
+                    text: 'Hora de fin (HH:MM):'
+                    size_hint_y: None
+                    height: '30dp'
+                    color: utils.get_color_from_hex('#333333')
+                    halign: 'left'
+                    text_size: self.size
+                    
+                TextInput:
+                    id: end_time
+                    multiline: False
+                    size_hint_y: None
+                    height: '40dp'
+                    padding: [10, 10]
+            
+            Button:
+                text: 'Generar Turnos'
+                size_hint_y: None
+                height: '50dp'
+                background_normal: ''
+                background_color: utils.get_color_from_hex('#4CAF50')
+                on_release: root.generate_shifts()
+        
+        ScrollView:
+            size_hint_x: 0.6 if root.width > root.height else 1
+            size_hint_y: 1 if root.width > root.height else 0.5
+            ScrollableLabel:
+                id: results
 '''
 
 class ScrollableLabel(ScrollView):
     text = StringProperty('')
 
-class TurnosScreen(BoxLayout):
+# Update TurnosScreen to inherit from AdaptiveBox
+class TurnosScreen(AdaptiveBox):
+    # Rest of your existing TurnosScreen code remains the same
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.workers = []
@@ -266,7 +276,6 @@ class TurnosScreen(BoxLayout):
 
 class TurnosApp(App):
     def build(self):
-        # Cargar el diseño KV
         from kivy.lang import Builder
         Builder.load_string(KV)
         return TurnosScreen()
