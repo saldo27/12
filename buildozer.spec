@@ -44,6 +44,7 @@ warning.disable = 0
 
 # Add these lines in the [app] section
 orientation = portrait
+android.orientation = portrait
 android.presplash.color = #FFFFFF
 fullscreen = 0
 
