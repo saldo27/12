@@ -16,7 +16,7 @@ source.include_patterns = assets/*,images/*
 version = 1.0
 
 # Requirements
-requirements = python3,kivy
+requirements = python3,kivy,datetime,randomvy
 
 # Android specific
 android.permissions = INTERNET
@@ -41,3 +41,11 @@ bin_dir = ./bin
 
 # Whether to clear build directory before each build
 warning.disable = 0
+
+# Add these lines in the [app] section
+orientation = portrait
+android.presplash.color = #FFFFFF
+fullscreen = 0
+
+# Add these permissions as your app works with time
+android.permissions = INTERNET,ACCESS_NETWORK_TIME
