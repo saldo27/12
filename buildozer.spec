@@ -8,20 +8,26 @@ source.include_patterns = assets/*,images/*
 source.exclude_dirs = tests, bin, .git
 version = 1.0
 
-requirements = python3,kivy,pillow
+requirements = python3,kivy,pillow,android
 
 # Android specific settings
 android.permissions = INTERNET
-android.api = 33
+android.api = 34  # Updated for Android 14
 android.minapi = 21
-android.sdk = 33
+android.sdk = 34  # Updated for Android 14
 android.ndk = 25b
 android.accept_sdk_license = True
 android.arch = arm64-v8a
 
-# Orientation settings
+# Orientation settings for Android 14
 orientation = portrait
 android.orientation = portrait
+android.screenOrientation = portrait
+android.manifest.orientation = portrait
+
+# Add these lines for Android 14 compatibility
+android.manifest.activity_config = orientation|screenSize
+android.manifest.launch_mode = singleTop
 
 # Bootstrap and dependencies
 android.bootstrap = sdl2
