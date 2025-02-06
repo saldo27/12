@@ -16,6 +16,7 @@ if platform == 'android':
 import random
 if platform == 'android':
     Window.softinput_mode = 'below_target'
+    Window.orientation = 'portrait'  # Add this line
     
 # Definición del diseño en KV Language
 KV = '''
