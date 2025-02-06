@@ -1,3 +1,11 @@
+# Import statements at the very top
+from kivy.config import Config
+# Force portrait BEFORE creating the window
+Config.set('graphics', 'orientation', 'portrait')
+Config.set('graphics', 'width', '540')  # Standard phone width
+Config.set('graphics', 'height', '960')  # Standard phone height
+Config.write()
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -11,20 +19,20 @@ from kivy.clock import Clock
 from datetime import datetime, timedelta
 from kivy.utils import platform
 
-# Force portrait mode - ADD THESE LINES BEFORE ANYTHING ELSE
-from kivy.config import Config
-Config.set('graphics', 'orientation', 'portrait')
-Config.set('graphics', 'width', '600')  # Set appropriate width for portrait
-Config.set('graphics', 'height', '1000')  # Set appropriate height for portrait
-Config.write()
-
-# Then set Window orientation
+# Force rotation to portrait mode
+Window.size = (540, 960)
+Window.rotation = 0
 Window.orientation = 'portrait'
 
 if platform == 'android':
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.INTERNET])
-    Window.softinput_mode = 'below_target
+    Window.softinput_mode = 'below_target'
+    
+    # Additional Android-specific orientation settings
+    from jnius import autoclass
+    activity = autoclass('org.kivy.android.PythonActivity').mActivity
+    activity.setRequestedOrientation(1)  # 1 = SCREEN_ORIENTATION_PORTRAIT
     
 # Definición del diseño en KV Language
 KV = '''
